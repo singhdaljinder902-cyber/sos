@@ -6,103 +6,120 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
-    body{
+    body {
       font-family: Arial, sans-serif;
-      background:#fff1f1;
-      text-align:center;
-      padding:25px 15px;
+      text-align: center;
+      background: #fff5f5;
+      padding: 20px;
     }
-    h1{ color:#b00000; }
-
-    .sos-btn{
-      background:#d00000;
-      color:#fff;
-      border:none;
-      width:95%;
-      max-width:360px;
-      padding:28px;
-      font-size:22px;
-      border-radius:18px;
-      margin-top:30px;
-      cursor:pointer;
-      animation: blink 1s infinite;
+    h1 {
+      color: #d60000;
     }
-
-    @keyframes blink{
-      0%{opacity:1;}
-      50%{opacity:0.6;}
-      100%{opacity:1;}
+    button {
+      padding: 15px 25px;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
     }
-
-    video{
-      width:95%;
-      max-width:360px;
-      margin-top:20px;
-      border-radius:12px;
-      display:none;
+    .sos-btn {
+      background: red;
+      color: white;
+      margin-top: 20px;
     }
-
-    .box{
-      background:#fff;
-      margin-top:20px;
-      padding:12px;
-      border-radius:10px;
-      word-break:break-word;
-      font-size:14px;
+    .box {
+      margin-top: 30px;
+      padding: 15px;
+      border: 2px dashed #ff4d4d;
+      border-radius: 10px;
+      background: #ffffff;
     }
-
-    .note{
-      margin-top:12px;
-      font-size:13px;
-      color:#333;
+    input {
+      padding: 10px;
+      width: 90%;
+      max-width: 300px;
+      font-size: 16px;
     }
   </style>
 </head>
 
 <body>
 
-  <h1>🚨 Safe Sakhi SOS</h1>
-  <p class="note">Emergency me niche button dabayein</p>
+  <h1>🛡️ Safe Sakhi</h1>
+  <p><b>One Click SOS – Emergency Help</b></p>
 
-  <button class="sos-btn" onclick="oneClickSOS()">
-    🚨 ONE-CLICK SOS 🚨
-  </button>
+  <!-- SOS BUTTON -->
+  <button class="sos-btn" onclick="sendSOS()">🚨 ONE CLICK SOS</button>
 
-  <video id="video" autoplay muted></video>
-  <div id="locationBox" class="box"></div>
+  <!-- PARENT NUMBER SECTION -->
+  <div class="box">
+    <h3>👨‍👩‍👧 Parent / Guardian Contact</h3>
+
+    <input
+      type="tel"
+      id="parentNumber"
+      placeholder="Enter parent mobile number"
+    />
+    <br><br>
+
+    <button onclick="saveParentNumber()">Save Number</button>
+    <button onclick="clearParentNumber()">Remove</button>
+
+    <p id="savedNumber" style="margin-top:15px;font-weight:bold;"></p>
+  </div>
 
   <script>
-    function oneClickSOS(){
-      // 1️⃣ Call Emergency
-      window.location.href = "tel:112";
+    // Load saved parent number
+    const saved = localStorage.getItem("parentNumber");
+    if (saved) {
+      document.getElementById("savedNumber").innerText =
+        "📞 Saved Parent Number: " + saved;
+    }
 
-      // 2️⃣ Start Camera
-      navigator.mediaDevices.getUserMedia({ video:true, audio:true })
-        .then(stream=>{
-          const video = document.getElementById("video");
-          video.srcObject = stream;
-          video.style.display = "block";
-        })
-        .catch(()=>{});
-
-      // 3️⃣ Get Location
-      if(navigator.geolocation){
-        navigator.geolocation.getCurrentPosition(
-          pos=>{
-            const lat = pos.coords.latitude;
-            const lon = pos.coords.longitude;
-            document.getElementById("locationBox").innerHTML =
-              "📍 Your Location:<br>" +
-              lat + ", " + lon +
-              "<br><br><a target='_blank' href='https://maps.google.com/?q=" +
-              lat + "," + lon + "'>Open in Google Maps</a>";
-          },
-          ()=>{
-            document.getElementById("locationBox").innerText =
-              "Location permission denied";
-          }
-        );
+    function saveParentNumber() {
+      const number = document.getElementById("parentNumber").value;
+      if (number.length < 10) {
+        alert("Please enter a valid mobile number");
+        return;
       }
+      localStorage.setItem("parentNumber", number);
+      document.getElementById("savedNumber").innerText =
+        "📞 Saved Parent Number: " + number;
+      alert("Parent number saved");
+    }
+
+    function clearParentNumber() {
+      localStorage.removeItem("parentNumber");
+      document.getElementById("savedNumber").innerText = "";
+      alert("Parent number removed");
+    }
+
+    function sendSOS() {
+      if (!navigator.geolocation) {
+        alert("Location not supported");
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        function (position) {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          const mapLink = "https://maps.google.com/?q=" + lat + "," + lon;
+
+          const parent = localStorage.getItem("parentNumber");
+
+          if (parent) {
+            window.location.href = "tel:" + parent;
+          } else {
+            alert(
+              "No parent number saved.\nLocation:\n" + mapLink
+            );
+          }
+        },
+        function () {
+          alert("Location permission denied");
+        }
+      );
     }
   </script>
 
