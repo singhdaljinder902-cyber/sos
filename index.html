@@ -12,20 +12,16 @@
       background: #fff5f5;
       padding: 20px;
     }
-    h1 {
-      color: #d60000;
-    }
-    button {
-      padding: 15px 25px;
-      font-size: 18px;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-    }
+    h1 { color: #d60000; }
     .sos-btn {
       background: red;
       color: white;
+      padding: 16px 30px;
+      font-size: 20px;
+      border: none;
+      border-radius: 12px;
       margin-top: 20px;
+      cursor: pointer;
     }
     .box {
       margin-top: 30px;
@@ -40,6 +36,12 @@
       max-width: 300px;
       font-size: 16px;
     }
+    .emergency {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #000;
+    }
   </style>
 </head>
 
@@ -50,6 +52,12 @@
 
   <!-- SOS BUTTON -->
   <button class="sos-btn" onclick="sendSOS()">🚨 ONE CLICK SOS</button>
+
+  <!-- EMERGENCY 112 DISPLAY -->
+  <div class="emergency">
+    📞 Emergency (Police / Ambulance):  
+    <a href="tel:112">112</a>
+  </div>
 
   <!-- PARENT NUMBER SECTION -->
   <div class="box">
@@ -69,7 +77,6 @@
   </div>
 
   <script>
-    // Load saved parent number
     const saved = localStorage.getItem("parentNumber");
     if (saved) {
       document.getElementById("savedNumber").innerText =
@@ -112,8 +119,10 @@
             window.location.href = "tel:" + parent;
           } else {
             alert(
-              "No parent number saved.\nLocation:\n" + mapLink
+              "Parent number not found.\nCalling Emergency 112.\n\nLocation:\n" +
+              mapLink
             );
+            window.location.href = "tel:112";
           }
         },
         function () {
