@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Safe Sakhi SOS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #6a1b9a;
+      color: #fff;
+      text-align: center;
+    }
+    .container {
+      padding: 30px 15px;
+    }
+    h1 {
+      margin-top: 10px;
+      font-size: 28px;
+    }
+    p {
+      font-size: 15px;
+      opacity: 0.95;
+    }
+    .btn {
+      display: block;
+      width: 90%;
+      max-width: 350px;
+      margin: 12px auto;
+      padding: 15px;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .btn-call {
+      background: #e53935;
+      color: #fff;
+    }
+    .btn-whatsapp {
+      background: #25D366;
+      color: #000;
+    }
+    .btn-location {
+      background: #1e88e5;
+      color: #fff;
+    }
+    .note {
+      margin-top: 25px;
+      font-size: 13px;
+      opacity: 0.9;
+    }
+    footer {
+      margin-top: 30px;
+      font-size: 12px;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>🚨 Safe Sakhi SOS</h1>
+    <p>Emergency help for women & children</p>
+
+    <button class="btn btn-call" onclick="callPolice()">
+      📞 Call Police (112)
+    </button>
+
+    <button class="btn btn-whatsapp" onclick="sendWhatsApp()">
+      💬 WhatsApp SOS Message
+    </button>
+
+    <button class="btn btn-location" onclick="sendLocation()">
+      📍 Send Live Location
+    </button>
+
+    <div class="note">
+      If you are in danger, press any button immediately.
+    </div>
+
+    <footer>
+      Safe Sakhi – Women Safety Initiative 🇮🇳
+    </footer>
+  </div>
+
+  <script>
+    function callPolice() {
+      window.location.href = "tel:112";
+    }
+
+    function sendWhatsApp() {
+      var number = "911234567890"; // change later
+      var message = "🚨 SOS! I need help immediately. Please contact me.";
+      var url = "https://wa.me/" + number + "?text=" + encodeURIComponent(message);
+      window.open(url, "_blank");
+    }
+
+    function sendLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+          var lat = position.coords.latitude;
+          var lon = position.coords.longitude;
+          var maps = "https://www.google.com/maps?q=" + lat + "," + lon;
+          window.open(maps, "_blank");
+        }, function() {
+          alert("Location access denied. Please enable location.");
+        });
+      } else {
+        alert("Geolocation not supported on this device.");
+      }
+    }
+  </script>
+
+</body>
+</html>
