@@ -1,90 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Safe Sakhi SOS</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body{
-      margin:0;
-      font-family:Arial, sans-serif;
-      background:#4b1b9a;
-      color:#fff;
-      text-align:center;
-    }
-    .container{
-      padding:30px 15px;
-    }
-    h1{
-      font-size:28px;
-      margin-bottom:10px;
-    }
-    p{
-      font-size:15px;
-      opacity:0.95;
-    }
-    .btn{
-      display:block;
-      width:90%;
-      max-width:350px;
-      margin:15px auto;
-      padding:15px;
-      font-size:18px;
-      font-weight:bold;
-      border:none;
-      border-radius:10px;
-      cursor:pointer;
-    }
-    .call{ background:#e53935; color:#fff; }
-    .whatsapp{ background:#25D366; color:#000; }
-    .location{ background:#1e88e5; color:#fff; }
-    footer{
-      margin-top:30px;
-      font-size:12px;
-      opacity:0.8;
-    }
-  </style>
-</head>
-<body>
+<meta charset="UTF-8">
+<title>Safe Sakhi SOS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<style>
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#4b1b9a;
+  color:#fff;
+  text-align:center;
+}
+.container{
+  padding:30px 15px;
+}
+h1{
+  font-size:28px;
+  margin-bottom:10px;
+}
+p{
+  font-size:15px;
+  opacity:0.95;
+}
+.btn{
+  display:block;
+  width:90%;
+  max-width:360px;
+  margin:15px auto;
+  padding:15px;
+  font-size:18px;
+  font-weight:bold;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+}
+.call{
+  background:#e53935;
+  color:#fff;
+}
+.parents{
+  background:#ff9800;
+  color:#000;
+}
+.whatsapp{
+  background:#25D366;
+  color:#000;
+}
+.location{
+  background:#1e88e5;
+  color:#fff;
+}
+footer{
+  margin-top:30px;
+  font-size:12px;
+  opacity:0.8;
+}
+</style>
+</head>
+
+<body>
 <div class="container">
   <h1>🚨 Safe Sakhi SOS</h1>
   <p>Emergency help for women & children</p>
 
   <button class="btn call" onclick="callPolice()">📞 Call Police (112)</button>
+
+  <button class="btn parents" onclick="callParents()">👪 Call Parents</button>
+
   <button class="btn whatsapp" onclick="sendWhatsApp()">💬 WhatsApp SOS</button>
+
   <button class="btn location" onclick="sendLocation()">📍 Send Location</button>
 
   <footer>
-    Safe Sakhi • Stay Safe • Stay Strong
+    Safe Sakhi · Stay Safe · Stay Strong
   </footer>
 </div>
 
 <script>
-  function callPolice(){
-    window.location.href = "tel:112";
-  }
+function callPolice(){
+  window.location.href = "tel:112";
+}
 
-  function sendWhatsApp(){
-    const msg = encodeURIComponent("🚨 SOS! I need help. This is an emergency.");
-    window.location.href = "https://wa.me/?text=" + msg;
-  }
+function callParents(){
+  window.location.href = "tel:98XXXXXXXX"; 
+  // 👆 YAHAN parents ka REAL number daalo
+}
 
-  function sendLocation(){
-    if(navigator.geolocation){
-      navigator.geolocation.getCurrentPosition(pos=>{
-        const lat = pos.coords.latitude;
-        const lon = pos.coords.longitude;
-        const link = `https://maps.google.com/?q=${lat},${lon}`;
-        const msg = encodeURIComponent("🚨 SOS! My live location: " + link);
-        window.location.href = "https://wa.me/?text=" + msg;
-      }, ()=>{
-        alert("Location permission denied");
-      });
-    } else {
-      alert("Location not supported");
-    }
+function sendWhatsApp(){
+  var msg = "🚨 SOS ALERT! Mujhe turant madad chahiye. Safe Sakhi se message bheja gaya hai.";
+  window.location.href = "https://wa.me/?text=" + encodeURIComponent(msg);
+}
+
+function sendLocation(){
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(function(pos){
+      var lat = pos.coords.latitude;
+      var lon = pos.coords.longitude;
+      var link = "https://maps.google.com/?q=" + lat + "," + lon;
+      alert("Location ready:\n" + link);
+    }, function(){
+      alert("Location access allow karo");
+    });
+  }else{
+    alert("Location supported nahi hai");
   }
+}
 </script>
 
 </body>
