@@ -1,113 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Safe Sakhi SOS</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <title>Safe Sakhi – SOS Emergency</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-body{
-  margin:0;
-  font-family:Arial, sans-serif;
-  background:#4b1b9a;
-  color:#fff;
-  text-align:center;
-}
-.container{
-  padding:30px 15px;
-}
-h1{
-  font-size:28px;
-  margin-bottom:10px;
-}
-p{
-  font-size:15px;
-  opacity:0.95;
-}
-.btn{
-  display:block;
-  width:90%;
-  max-width:360px;
-  margin:15px auto;
-  padding:15px;
-  font-size:18px;
-  font-weight:bold;
-  border:none;
-  border-radius:10px;
-  cursor:pointer;
-}
-.call{
-  background:#e53935;
-  color:#fff;
-}
-.parents{
-  background:#ff9800;
-  color:#000;
-}
-.whatsapp{
-  background:#25D366;
-  color:#000;
-}
-.location{
-  background:#1e88e5;
-  color:#fff;
-}
-footer{
-  margin-top:30px;
-  font-size:12px;
-  opacity:0.8;
-}
-</style>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(135deg, #ff4d4d, #ff0000);
+      color: #fff;
+      text-align: center;
+    }
+
+    .container {
+      padding: 30px 15px;
+    }
+
+    h1 {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 16px;
+      opacity: 0.95;
+    }
+
+    .sos-btn {
+      margin: 25px 0;
+      padding: 22px;
+      font-size: 26px;
+      font-weight: bold;
+      background: #fff;
+      color: #d90000;
+      border-radius: 60px;
+      text-decoration: none;
+      display: inline-block;
+      width: 85%;
+      max-width: 320px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+    }
+
+    .card {
+      background: rgba(255,255,255,0.15);
+      padding: 20px;
+      border-radius: 15px;
+      margin-top: 25px;
+    }
+
+    .action-btn {
+      display: block;
+      margin: 12px auto;
+      padding: 14px;
+      width: 90%;
+      max-width: 320px;
+      background: #fff;
+      color: #000;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 10px;
+    }
+
+    footer {
+      margin-top: 30px;
+      font-size: 13px;
+      opacity: 0.9;
+    }
+  </style>
 </head>
 
 <body>
-<div class="container">
-  <h1>🚨 Safe Sakhi SOS</h1>
-  <p>Emergency help for women & children</p>
+  <div class="container">
+    <h1>🚨 SOS Emergency</h1>
+    <p>If you are in danger, act immediately</p>
 
-  <button class="btn call" onclick="callPolice()">📞 Call Police (112)</button>
+    <!-- MAIN SOS -->
+    <a class="sos-btn" href="https://wa.me/601174060861">
+      SEND SOS on WhatsApp
+    </a>
 
-  <button class="btn parents" onclick="callParents()">👪 Call Parents</button>
+    <!-- PARENTS SECTION -->
+    <div class="card">
+      <h2>👨‍👩‍👧 Parents Help</h2>
 
-  <button class="btn whatsapp" onclick="sendWhatsApp()">💬 WhatsApp SOS</button>
+      <a class="action-btn" href="tel:601174060861">
+        📞 Call Parents
+      </a>
 
-  <button class="btn location" onclick="sendLocation()">📍 Send Location</button>
+      <a class="action-btn"
+         href="https://wa.me/601174060861?text=I%20am%20in%20danger.%20Please%20help%20me%20immediately.%20This%20is%20an%20SOS%20alert.">
+        💬 WhatsApp Parents
+      </a>
+    </div>
 
-  <footer>
-    Safe Sakhi · Stay Safe · Stay Strong
-  </footer>
-</div>
-
-<script>
-function callPolice(){
-  window.location.href = "tel:112";
-}
-
-function callParents(){
-  window.location.href = "tel:98XXXXXXXX"; 
-  // 👆 YAHAN parents ka REAL number daalo
-}
-
-function sendWhatsApp(){
-  var msg = "🚨 SOS ALERT! Mujhe turant madad chahiye. Safe Sakhi se message bheja gaya hai.";
-  window.location.href = "https://wa.me/?text=" + encodeURIComponent(msg);
-}
-
-function sendLocation(){
-  if(navigator.geolocation){
-    navigator.geolocation.getCurrentPosition(function(pos){
-      var lat = pos.coords.latitude;
-      var lon = pos.coords.longitude;
-      var link = "https://maps.google.com/?q=" + lat + "," + lon;
-      alert("Location ready:\n" + link);
-    }, function(){
-      alert("Location access allow karo");
-    });
-  }else{
-    alert("Location supported nahi hai");
-  }
-}
-</script>
-
+    <footer>
+      Safe Sakhi © Women Safety Initiative  
+      <br>Powered by QR Emergency System
+    </footer>
+  </div>
 </body>
 </html>
