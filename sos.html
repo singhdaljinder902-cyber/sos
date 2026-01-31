@@ -1,105 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Safe Sakhi – Emergency SOS</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Safe Sakhi SOS</title>
 
-  <style>
+<style>
     body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: #f6f7fb;
-      color: #333;
+        margin: 0;
+        background: black;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        font-family: Arial, sans-serif;
+        text-align: center;
     }
-    .container {
-      max-width: 520px;
-      margin: auto;
-      padding: 20px;
-    }
-    .card {
-      background: #fff;
-      border-radius: 14px;
-      padding: 22px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-    }
-    h1 {
-      text-align: center;
-      color: #6a1b9a;
-    }
-    .subtitle {
-      text-align: center;
-      color: #666;
-      margin-bottom: 20px;
-    }
-    .alert {
-      background: #fff3f3;
-      border-left: 5px solid #e53935;
-      padding: 12px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-      font-size: 14px;
-    }
-    .btn {
-      display: block;
-      width: 100%;
-      padding: 15px;
-      margin: 12px 0;
-      border-radius: 10px;
-      text-decoration: none;
-      font-size: 16px;
-      font-weight: bold;
-      text-align: center;
-      color: #fff;
-    }
-    .call { background: #d32f2f; }
-    .whatsapp { background: #25D366; }
-    .location { background: #1976d2; }
 
-    .info {
-      font-size: 14px;
-      color: #555;
-      margin-top: 20px;
+    .sos-btn {
+        width: 230px;
+        height: 230px;
+        border-radius: 50%;
+        background: red;
+        color: white;
+        font-size: 38px;
+        font-weight: bold;
+        border: none;
+        box-shadow: 0 0 40px red;
+        animation: pulse 1.2s infinite;
     }
-    footer {
-      text-align: center;
-      font-size: 12px;
-      color: #888;
-      margin-top: 25px;
+
+    @keyframes pulse {
+        0% { box-shadow: 0 0 10px red; }
+        50% { box-shadow: 0 0 50px red; }
+        100% { box-shadow: 0 0 10px red; }
     }
-  </style>
+
+    p {
+        margin-top: 15px;
+        font-size: 14px;
+        color: #ccc;
+    }
+</style>
 </head>
 
 <body>
-  <div class="container">
-    <div class="card">
-      <h1>🚨 Emergency SOS</h1>
-      <div class="subtitle">Safe Sakhi – Women Safety Support</div>
 
-      <div class="alert">
-        If you are in danger or feel unsafe, use the options below immediately.
-      </div>
+<div>
+    <button class="sos-btn" onclick="activateSOS()">SOS</button>
+    <p>Siren • Location • WhatsApp Business</p>
+</div>
 
-      <a href="tel:112" class="btn call">📞 Call Emergency (112)</a>
+<!-- 🔊 SIREN -->
+<audio id="siren" loop>
+    <source src="police-siren-sound-effect-317645.mp3" type="audio/mpeg">
+</audio>
 
-      <a href="https://wa.me/601174060861?text=I%20need%20urgent%20help.%20This%20is%20an%20SOS."
-         class="btn whatsapp">
-        💬 WhatsApp SOS Help
-      </a>
+<script>
+function activateSOS() {
 
-      <a href="https://www.google.com/maps" class="btn location">
-        📍 Share Live Location
-      </a>
+    // 🔊 Siren
+    const siren = document.getElementById("siren");
+    siren.play();
 
-      <div class="info">
-        • Works silently when you can’t speak<br>
-        • Can be used by students, women, seniors<br>
-        • One scan can save a life
-      </div>
+    // 📳 Vibration
+    if (navigator.vibrate) {
+        navigator.vibrate([500,300,500,300,500,300]);
+    }
 
-      <footer>© Safe Sakhi</footer>
-    </div>
-  </div>
+    // 📍 Location
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(sendWhatsApp, locationError);
+    } else {
+        alert("Location not supported");
+    }
+}
+
+function sendWhatsApp(position) {
+    const lat = position.coords.latitude;
+    const lon = position.coords.longitude;
+
+    const locationLink = `https://maps.google.com/?q=${lat},${lon}`;
+
+    const message =
+`🚨 SOS ALERT 🚨
+Emergency! I need help.
+Live location:
+${locationLink}
+— Safe Sakhi`;
+
+    // 💬 WhatsApp Business number (FIXED)
+    const whatsappNumber = "601174060861";
+
+    window.open(
+        `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`,
+        "_blank"
+    );
+}
+
+function locationError() {
+    alert("Location permission denied");
+}
+</script>
+
 </body>
 </html>
-
