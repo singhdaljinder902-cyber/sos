@@ -1,104 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Safe Sakhi – SOS Emergency</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <title>Safe Sakhi SOS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <style>
     body {
       margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(135deg, #ff4d4d, #ff0000);
-      color: #fff;
-      text-align: center;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #b30000;
+      font-family: Arial, sans-serif;
     }
 
-    .container {
-      padding: 30px 15px;
-    }
-
-    h1 {
-      font-size: 32px;
-      margin-bottom: 10px;
-    }
-
-    p {
-      font-size: 16px;
-      opacity: 0.95;
-    }
-
-    .sos-btn {
-      margin: 25px 0;
-      padding: 22px;
-      font-size: 26px;
+    button {
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      border: none;
+      background: #ff0000;
+      color: white;
+      font-size: 28px;
       font-weight: bold;
-      background: #fff;
-      color: #d90000;
-      border-radius: 60px;
-      text-decoration: none;
-      display: inline-block;
-      width: 85%;
-      max-width: 320px;
-      box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+      box-shadow: 0 0 30px rgba(0,0,0,0.6);
     }
 
-    .card {
-      background: rgba(255,255,255,0.15);
-      padding: 20px;
-      border-radius: 15px;
-      margin-top: 25px;
-    }
-
-    .action-btn {
-      display: block;
-      margin: 12px auto;
-      padding: 14px;
-      width: 90%;
-      max-width: 320px;
-      background: #fff;
-      color: #000;
-      text-decoration: none;
-      font-weight: bold;
-      border-radius: 10px;
-    }
-
-    footer {
-      margin-top: 30px;
-      font-size: 13px;
-      opacity: 0.9;
+    button:active {
+      transform: scale(0.95);
     }
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <h1>🚨 SOS Emergency</h1>
-    <p>If you are in danger, act immediately</p>
 
-    <!-- MAIN SOS -->
-    <a class="sos-btn" href="https://wa.me/601174060861">
-      SEND SOS on WhatsApp
-    </a>
+<button onclick="sendSOS()">SOS</button>
 
-    <!-- PARENTS SECTION -->
-    <div class="card">
-      <h2>👨‍👩‍👧 Parents Help</h2>
+<audio id="siren" src="siren.mp3" loop></audio>
 
-      <a class="action-btn" href="tel:601174060861">
-        📞 Call Parents
-      </a>
+<script>
+function sendSOS() {
+  // 🔊 Siren
+  const siren = document.getElementById("siren");
+  siren.play().catch(()=>{});
 
-      <a class="action-btn"
-         href="https://wa.me/601174060861?text=I%20am%20in%20danger.%20Please%20help%20me%20immediately.%20This%20is%20an%20SOS%20alert.">
-        💬 WhatsApp Parents
-      </a>
-    </div>
+  // 📍 Location
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      function(position) {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
 
-    <footer>
-      Safe Sakhi © Women Safety Initiative  
-      <br>Powered by QR Emergency System
-    </footer>
-  </div>
+        const locationLink = 
+          "https://maps.google.com/?q=" + lat + "," + lon;
+
+        const message =
+          "🚨 SAFE SAKHI SOS ALERT 🚨\n\n" +
+          "User is in danger.\n" +
+          "Live Location:\n" +
+          locationLink;
+
+        // 📲 WhatsApp (Business Number)
+        const whatsappNumber = "601174060861";
+        const whatsappURL =
+          "https://wa.me/" + whatsappNumber + "?text=" +
+          encodeURIComponent(message);
+
+        window.open(whatsappURL, "_blank");
+
+        // ☎️ Emergency Call 112
+        setTimeout(() => {
+          window.location.href = "tel:112";
+        }, 1500);
+      },
+      function() {
+        alert("Location permission denied");
+      }
+    );
+  } else {
+    alert("Geolocation not supported");
+  }
+}
+</script>
+
 </body>
 </html>
