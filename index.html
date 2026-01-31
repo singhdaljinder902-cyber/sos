@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Safe Sakhi SOS</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
     body {
@@ -22,8 +22,8 @@
       border-radius: 50%;
       border: none;
       background: #ff0000;
-      color: white;
-      font-size: 28px;
+      color: #fff;
+      font-size: 30px;
       font-weight: bold;
       box-shadow: 0 0 30px rgba(0,0,0,0.6);
     }
@@ -38,50 +38,55 @@
 
 <button onclick="sendSOS()">SOS</button>
 
-<audio id="siren" src="siren.mp3" loop></audio>
-
 <script>
 function sendSOS() {
-  // 🔊 Siren
-  const siren = document.getElementById("siren");
-  siren.play().catch(()=>{});
 
-  // 📍 Location
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      function(position) {
-        const lat = position.coords.latitude;
-        const lon = position.coords.longitude;
-
-        const locationLink = 
-          "https://maps.google.com/?q=" + lat + "," + lon;
-
-        const message =
-          "🚨 SAFE SAKHI SOS ALERT 🚨\n\n" +
-          "User is in danger.\n" +
-          "Live Location:\n" +
-          locationLink;
-
-        // 📲 WhatsApp (Business Number)
-        const whatsappNumber = "601174060861";
-        const whatsappURL =
-          "https://wa.me/" + whatsappNumber + "?text=" +
-          encodeURIComponent(message);
-
-        window.open(whatsappURL, "_blank");
-
-        // ☎️ Emergency Call 112
-        setTimeout(() => {
-          window.location.href = "tel:112";
-        }, 1500);
-      },
-      function() {
-        alert("Location permission denied");
-      }
-    );
-  } else {
-    alert("Geolocation not supported");
+  // 📳 Vibration (user feedback)
+  if (navigator.vibrate) {
+    navigator.vibrate([500, 300, 500]);
   }
+
+  // 📍 Live location
+  if (!navigator.geolocation) {
+    alert("Location not supported");
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    function(position) {
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
+
+      const locationLink =
+        "https://maps.google.com/?q=" + lat + "," + lon;
+
+      const message =
+        "🚨 SAFE SAKHI EMERGENCY ALERT 🚨\n\n" +
+        "Immediate help needed.\n" +
+        "Live Location:\n" +
+        locationLink;
+
+      // 📲 WhatsApp Business alert
+      const whatsappNumber = "601174060861";
+      const whatsappURL =
+        "https://wa.me/" + whatsappNumber + "?text=" +
+        encodeURIComponent(message);
+
+      window.open(whatsappURL, "_blank");
+
+      // ☎️ 112 Emergency call
+      setTimeout(() => {
+        window.location.href = "tel:112";
+      }, 1200);
+    },
+    function() {
+      alert("Please allow location access");
+    },
+    {
+      enableHighAccuracy: true,
+      timeout: 10000
+    }
+  );
 }
 </script>
 
