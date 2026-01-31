@@ -6,34 +6,24 @@
 </head>
 
 <body style="margin:0;height:100vh;display:flex;
-justify-content:center;align-items:center;background:#8b0000;">
+justify-content:center;align-items:center;background:#8b0000;color:white;">
 
-<!-- SETUP -->
-<div id="setup" style="display:none;text-align:center;color:white;">
+<div id="setup" style="display:none;text-align:center;">
   <h2>Set Parent WhatsApp Numbers</h2>
-
   <input id="p1" type="tel" placeholder="Parent 1 (91XXXXXXXXXX)"
     style="font-size:18px;padding:10px;width:240px;"><br><br>
-
   <input id="p2" type="tel" placeholder="Parent 2 (91XXXXXXXXXX)"
     style="font-size:18px;padding:10px;width:240px;"><br><br>
-
-  <button onclick="save()" style="font-size:18px;padding:10px;">
-    Save Numbers
-  </button>
+  <button onclick="save()">Save Numbers</button>
 </div>
 
-<!-- SOS -->
 <div id="sos" style="display:none;text-align:center;">
   <button onclick="startSOS()" style="
     background:red;color:white;font-size:32px;
     padding:32px 60px;border:none;border-radius:20px;">
     🚨 SOS
   </button>
-  <br><br>
-  <button onclick="reset()" style="font-size:14px;padding:8px 14px;">
-    Change Parent Numbers
-  </button>
+  <p id="status" style="margin-top:15px;font-size:16px;"></p>
 </div>
 
 <audio id="siren" loop>
@@ -62,24 +52,25 @@ function save() {
   location.reload();
 }
 
-function reset() {
-  localStorage.clear();
-  location.reload();
-}
-
 function startSOS() {
 
-  // 🔊 SIREN (guaranteed)
+  // 🔊 1. Siren FIRST
   const siren = document.getElementById("siren");
   siren.volume = 1.0;
   siren.play();
 
-  // 📍 LOCATION + WHATSAPP
+  document.getElementById("status").innerText =
+    "🚨 Siren ON • Getting location...";
+
+  // 📍 2. Location + WhatsApp
   navigator.geolocation.getCurrentPosition(pos => {
 
     const map =
       "https://maps.google.com/?q=" +
       pos.coords.latitude + "," + pos.coords.longitude;
+
+    document.getElementById("status").innerText =
+      "📍 Location detected • Informing parents";
 
     const msg =
       "🚨 SOS ALERT – Safe Sakhi\n\n" +
@@ -95,10 +86,10 @@ function startSOS() {
 
   });
 
-  // 📞 112 CALL
+  // 📞 3. CALL 112 (DELAYED)
   setTimeout(() => {
     window.location.href = "tel:112";
-  }, 900);
+  }, 2000); // ⏱ 2 sec delay (IMPORTANT)
 }
 </script>
 
