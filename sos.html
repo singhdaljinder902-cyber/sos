@@ -5,24 +5,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
-<body id="body" style="margin:0;height:100vh;display:flex;
+<body style="margin:0;height:100vh;display:flex;
 justify-content:center;align-items:center;background:#8b0000;">
 
-<div id="setup" style="display:none;text-align:center;">
-  <h2 style="color:white;">Set Parent WhatsApp Number</h2>
-  <input id="parentNo" type="tel" placeholder="91XXXXXXXXXX"
-    style="font-size:18px;padding:10px;width:220px;">
-  <br><br>
-  <button onclick="saveNumber()" style="font-size:18px;padding:10px;">
-    Save Number
+<!-- SETUP SCREEN -->
+<div id="setup" style="display:none;text-align:center;color:white;">
+  <h2>Set Parent WhatsApp Numbers</h2>
+
+  <input id="parent1" type="tel" placeholder="Parent 1 (91XXXXXXXXXX)"
+    style="font-size:18px;padding:10px;width:240px;"><br><br>
+
+  <input id="parent2" type="tel" placeholder="Parent 2 (91XXXXXXXXXX)"
+    style="font-size:18px;padding:10px;width:240px;"><br><br>
+
+  <button onclick="saveNumbers()" style="font-size:18px;padding:10px;">
+    Save Numbers
   </button>
 </div>
 
-<div id="sos" style="display:none;">
+<!-- SOS SCREEN -->
+<div id="sos" style="display:none;text-align:center;">
   <button onclick="startSOS()" style="
     background:red;color:white;font-size:30px;
     padding:30px 50px;border:none;border-radius:18px;">
     🚨 SOS
+  </button>
+  <br><br>
+  <button onclick="changeNumbers()" style="
+    font-size:14px;padding:8px 14px;border:none;border-radius:10px;">
+    Change Parent Numbers
   </button>
 </div>
 
@@ -31,31 +42,46 @@ justify-content:center;align-items:center;background:#8b0000;">
 </audio>
 
 <script>
-const savedNumber = localStorage.getItem("parentNumber");
+const p1 = localStorage.getItem("parent1");
+const p2 = localStorage.getItem("parent2");
 
-if (savedNumber) {
+if (p1 || p2) {
   document.getElementById("sos").style.display = "block";
 } else {
   document.getElementById("setup").style.display = "block";
 }
 
-function saveNumber() {
-  const no = document.getElementById("parentNo").value;
-  if (no.length < 10) {
-    alert("Valid number daalo");
+function saveNumbers() {
+  const n1 = document.getElementById("parent1").value.trim();
+  const n2 = document.getElementById("parent2").value.trim();
+
+  if (n1.length < 10 && n2.length < 10) {
+    alert("Kam se kam ek valid number daalo");
     return;
   }
-  localStorage.setItem("parentNumber", no);
+
+  if (n1) localStorage.setItem("parent1", n1);
+  if (n2) localStorage.setItem("parent2", n2);
+
   location.reload();
+}
+
+function changeNumbers() {
+  if (confirm("Parent numbers change karna hai?")) {
+    localStorage.removeItem("parent1");
+    localStorage.removeItem("parent2");
+    location.reload();
+  }
 }
 
 function startSOS() {
 
-  // Siren
+  // 🔊 Siren
   const siren = document.getElementById("siren");
+  siren.volume = 1.0;
   siren.play();
 
-  // Location + WhatsApp
+  // 📍 Location + WhatsApp
   navigator.geolocation.getCurrentPosition(pos => {
 
     const lat = pos.coords.latitude;
@@ -64,21 +90,32 @@ function startSOS() {
 
     const msg =
       "🚨 SOS ALERT – Safe Sakhi\n\n" +
-      "I need help urgently.\n\n📍 Location:\n" + map +
+      "I need help urgently.\n\n" +
+      "📍 Live Location:\n" + map +
       "\n\nPlease call me immediately.";
 
-    const parent = localStorage.getItem("parentNumber");
-    window.open(
-      "https://wa.me/" + parent +
-      "?text=" + encodeURIComponent(msg),
-      "_blank"
-    );
+    if (p1) {
+      window.open(
+        "https://wa.me/" + p1 + "?text=" + encodeURIComponent(msg),
+        "_blank"
+      );
+    }
+
+    if (p2) {
+      setTimeout(() => {
+        window.open(
+          "https://wa.me/" + p2 + "?text=" + encodeURIComponent(msg),
+          "_blank"
+        );
+      }, 600);
+    }
+
   });
 
-  // Call 112
+  // 📞 Call 112
   setTimeout(() => {
     window.location.href = "tel:112";
-  }, 800);
+  }, 900);
 }
 </script>
 
