@@ -1,149 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Safe Sakhi AI SOS</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<body class="bg-pink-50 min-h-screen flex items-center justify-center">
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json">
 
-  <div class="bg-white shadow-xl rounded-2xl p-6 w-11/12 max-w-md text-center">
-    <h1 class="text-2xl font-bold text-pink-600 mb-4">Safe Sakhi AI SOS</h1>
+  <title>Safe Sakhi SOS</title>
 
-    <!-- AI Danger Input -->
-    <div class="mb-4">
-      <input id="aiInput" type="text" placeholder="Type if you feel unsafe..." class="w-full border p-2 rounded" oninput="runLiteAI()" />
-      <p id="aiStatus" class="text-sm text-gray-500 mt-2"></p>
-    </div>
-
-    <!-- Number Setup -->
-    <div id="setupSection">
-      <p class="mb-2 text-gray-600">Add Emergency WhatsApp Numbers</p>
-      <input id="num1" type="tel" placeholder="Number 1 with country code" class="w-full border p-2 rounded mb-2" />
-      <input id="num2" type="tel" placeholder="Number 2 with country code" class="w-full border p-2 rounded mb-4" />
-      <button onclick="saveNumbers()" class="bg-pink-600 text-white px-4 py-2 rounded w-full">Save Numbers</button>
-    </div>
-
-    <!-- SOS Section -->
-    <div id="sosSection" class="hidden">
-      <button onclick="sendSOS()" class="bg-red-600 text-white text-xl font-bold px-6 py-4 rounded-full w-full mb-3">
-        SOS EMERGENCY
-      </button>
-
-      <button onclick="callEmergency()" class="bg-blue-600 text-white px-4 py-2 rounded w-full mb-3">
-        Call 112
-      </button>
-
-      <button onclick="fakeCall()" class="bg-yellow-500 text-white px-4 py-2 rounded w-full mb-3">
-        Fake Call (Safety Trick)
-      </button>
-
-      <button onclick="changeNumbers()" class="bg-gray-600 text-white px-4 py-2 rounded w-full">
-        Change Numbers
-      </button>
-    </div>
-  </div>
-
-<script>
-
-// ===== LOAD SAVED NUMBERS =====
-window.onload = function() {
-  let n1 = localStorage.getItem("safe_num1");
-  if(n1){
-    document.getElementById("setupSection").classList.add("hidden");
-    document.getElementById("sosSection").classList.remove("hidden");
-  }
-}
-
-// ===== SAVE NUMBERS =====
-function saveNumbers(){
-  let n1 = document.getElementById("num1").value;
-  let n2 = document.getElementById("num2").value;
-
-  if(!n1){
-    alert("Enter at least one number");
-    return;
-  }
-
-  localStorage.setItem("safe_num1", n1);
-  localStorage.setItem("safe_num2", n2);
-
-  alert("Numbers Saved Successfully");
-  location.reload();
-}
-
-// ===== CHANGE NUMBERS =====
-function changeNumbers(){
-  localStorage.removeItem("safe_num1");
-  localStorage.removeItem("safe_num2");
-  location.reload();
-}
-
-// ===== CALL 112 =====
-function callEmergency(){
-  window.location.href = "tel:112";
-}
-
-// ===== LITE AI SYSTEM =====
-function runLiteAI(){
-  let text = document.getElementById("aiInput").value.toLowerCase();
-  let status = document.getElementById("aiStatus");
-
-  let dangerWords = ["help","bachao","danger","scared","follow","unsafe","stuck","save me"];
-
-  let found = dangerWords.some(word => text.includes(word));
-
-  if(found){
-    status.innerText = "⚠ Danger detected — SOS recommended";
-    status.className = "text-red-600 font-semibold mt-2";
-  } else if(text.length > 3){
-    status.innerText = "You seem safe";
-    status.className = "text-green-600 mt-2";
-  } else {
-    status.innerText = "";
-  }
-}
-
-// ===== FAKE CALL SAFETY FEATURE =====
-function fakeCall(){
-  alert("Incoming Call: Family Member");
-}
-
-// ===== SOS WITH LOCATION =====
-function sendSOS(){
-  if(!navigator.geolocation){
-    alert("Location not supported");
-    return;
-  }
-
-  navigator.geolocation.getCurrentPosition(function(pos){
-    let lat = pos.coords.latitude;
-    let lon = pos.coords.longitude;
-
-    let locationLink = `https://maps.google.com/?q=${lat},${lon}`;
-
-    let hour = new Date().getHours();
-    let msgText = "🚨 EMERGENCY! I need help.";
-
-    if(hour >= 21 || hour <= 5){
-      msgText = "🚨 NIGHT EMERGENCY! Immediate help needed!";
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #ffebee;
+      padding: 40px;
     }
 
-    let msg = encodeURIComponent(msgText + "\nMy Location:\n" + locationLink);
+    h1 {
+      color: #c62828;
+    }
 
-    let n1 = localStorage.getItem("safe_num1");
-    let n2 = localStorage.getItem("safe_num2");
+    button {
+      padding: 20px 40px;
+      font-size: 22px;
+      background: red;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      margin-top: 30px;
+    }
+  </style>
+</head>
 
-    if(n1) window.open(`https://wa.me/${n1}?text=${msg}`);
-    if(n2) window.open(`https://wa.me/${n2}?text=${msg}`);
+<body>
 
-  }, function(){
-    alert("Location permission denied");
-  });
+<h1>🚨 SAFE SAKHI SOS</h1>
+
+<button onclick="sendSOS()">SOS</button>
+
+<script>
+function sendSOS() {
+
+  // 112 Dial
+  window.location.href = "tel:112";
+
+  // WhatsApp Alert (Change Number)
+  let number = "919888779662";  
+  let msg = "Emergency! Please help. My live location needed.";
+
+  let url = "https://wa.me/" + number + "?text=" + encodeURIComponent(msg);
+  window.open(url, "_blank");
 }
 
+// Service Worker Register
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("service-worker.js");
+}
 </script>
 
 </body>
