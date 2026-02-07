@@ -1,61 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- PWA Manifest -->
-  <link rel="manifest" href="manifest.json">
+<title>Safe Sakhi SOS</title>
 
-  <title>Safe Sakhi SOS</title>
+<!-- Manifest Link -->
+<link rel="manifest" href="manifest.json">
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      background: #ffebee;
-      padding: 40px;
-    }
+<!-- Theme Color -->
+<meta name="theme-color" content="#ff4da6">
 
-    h1 {
-      color: #c62828;
-    }
+<style>
+body{
+font-family: Arial, sans-serif;
+text-align:center;
+background:#ffe6f0;
+margin:0;
+padding:0;
+}
 
-    button {
-      padding: 20px 40px;
-      font-size: 22px;
-      background: red;
-      color: white;
-      border: none;
-      border-radius: 12px;
-      margin-top: 30px;
-    }
-  </style>
+.container{
+margin-top:80px;
+}
+
+h1{
+color:#ff1a75;
+}
+
+button{
+background:#ff1a75;
+color:white;
+border:none;
+padding:20px 40px;
+font-size:22px;
+border-radius:50px;
+margin-top:30px;
+}
+</style>
+
 </head>
 
 <body>
 
-<h1>🚨 SAFE SAKHI SOS</h1>
+<div class="container">
+<h1>🚨 Safe Sakhi SOS</h1>
 
 <button onclick="sendSOS()">SOS</button>
+</div>
 
 <script>
-function sendSOS() {
+function sendSOS(){
+alert("SOS Activated");
 
-  // 112 Dial
-  window.location.href = "tel:112";
-
-  // WhatsApp Alert (Change Number)
-  let number = "919888779662";  
-  let msg = "Emergency! Please help. My live location needed.";
-
-  let url = "https://wa.me/" + number + "?text=" + encodeURIComponent(msg);
-  window.open(url, "_blank");
+// 112 Call
+window.location.href="tel:112";
 }
+</script>
 
-// Service Worker Register
+<!-- Service Worker Register -->
+<script>
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("service-worker.js");
+window.addEventListener("load", function() {
+navigator.serviceWorker.register("service-worker.js")
+.then(function(registration) {
+console.log("ServiceWorker registered:", registration.scope);
+})
+.catch(function(error) {
+console.log("ServiceWorker registration failed:", error);
+});
+});
 }
 </script>
 
