@@ -3,13 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Safe Sakhi SOS</title>
+  <title>Safe Sakhi AI SOS</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
+
 <body class="bg-pink-50 min-h-screen flex items-center justify-center">
 
   <div class="bg-white shadow-xl rounded-2xl p-6 w-11/12 max-w-md text-center">
-    <h1 class="text-2xl font-bold text-pink-600 mb-4">Safe Sakhi SOS</h1>
+    <h1 class="text-2xl font-bold text-pink-600 mb-4">Safe Sakhi AI SOS</h1>
+
+    <!-- AI Danger Input -->
+    <div class="mb-4">
+      <input id="aiInput" type="text" placeholder="Type if you feel unsafe..." class="w-full border p-2 rounded" oninput="runLiteAI()" />
+      <p id="aiStatus" class="text-sm text-gray-500 mt-2"></p>
+    </div>
 
     <!-- Number Setup -->
     <div id="setupSection">
@@ -29,6 +36,10 @@
         Call 112
       </button>
 
+      <button onclick="fakeCall()" class="bg-yellow-500 text-white px-4 py-2 rounded w-full mb-3">
+        Fake Call (Safety Trick)
+      </button>
+
       <button onclick="changeNumbers()" class="bg-gray-600 text-white px-4 py-2 rounded w-full">
         Change Numbers
       </button>
@@ -37,7 +48,7 @@
 
 <script>
 
-// Load saved numbers
+// ===== LOAD SAVED NUMBERS =====
 window.onload = function() {
   let n1 = localStorage.getItem("safe_num1");
   if(n1){
@@ -46,6 +57,7 @@ window.onload = function() {
   }
 }
 
+// ===== SAVE NUMBERS =====
 function saveNumbers(){
   let n1 = document.getElementById("num1").value;
   let n2 = document.getElementById("num2").value;
@@ -62,16 +74,44 @@ function saveNumbers(){
   location.reload();
 }
 
+// ===== CHANGE NUMBERS =====
 function changeNumbers(){
   localStorage.removeItem("safe_num1");
   localStorage.removeItem("safe_num2");
   location.reload();
 }
 
+// ===== CALL 112 =====
 function callEmergency(){
   window.location.href = "tel:112";
 }
 
+// ===== LITE AI SYSTEM =====
+function runLiteAI(){
+  let text = document.getElementById("aiInput").value.toLowerCase();
+  let status = document.getElementById("aiStatus");
+
+  let dangerWords = ["help","bachao","danger","scared","follow","unsafe","stuck","save me"];
+
+  let found = dangerWords.some(word => text.includes(word));
+
+  if(found){
+    status.innerText = "⚠ Danger detected — SOS recommended";
+    status.className = "text-red-600 font-semibold mt-2";
+  } else if(text.length > 3){
+    status.innerText = "You seem safe";
+    status.className = "text-green-600 mt-2";
+  } else {
+    status.innerText = "";
+  }
+}
+
+// ===== FAKE CALL SAFETY FEATURE =====
+function fakeCall(){
+  alert("Incoming Call: Family Member");
+}
+
+// ===== SOS WITH LOCATION =====
 function sendSOS(){
   if(!navigator.geolocation){
     alert("Location not supported");
@@ -84,7 +124,14 @@ function sendSOS(){
 
     let locationLink = `https://maps.google.com/?q=${lat},${lon}`;
 
-    let msg = encodeURIComponent("🚨 EMERGENCY!\nI need help.\nMy Live Location:\n" + locationLink);
+    let hour = new Date().getHours();
+    let msgText = "🚨 EMERGENCY! I need help.";
+
+    if(hour >= 21 || hour <= 5){
+      msgText = "🚨 NIGHT EMERGENCY! Immediate help needed!";
+    }
+
+    let msg = encodeURIComponent(msgText + "\nMy Location:\n" + locationLink);
 
     let n1 = localStorage.getItem("safe_num1");
     let n2 = localStorage.getItem("safe_num2");
