@@ -1,200 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Safe Sakhi Smart + AI</title>
-
-<style>
-body{
-font-family: Arial;
-background:#fff0f5;
-text-align:center;
-margin:0;
-}
-
-.header{
-background:#ff4d6d;
-color:white;
-padding:15px;
-font-size:22px;
-}
-
-.status{
-margin-top:10px;
-font-size:18px;
-}
-
-.box{
-margin-top:20px;
-}
-
-input{
-padding:10px;
-width:70%;
-font-size:16px;
-border-radius:8px;
-border:1px solid #ccc;
-}
-
-.save-btn{
-margin-top:10px;
-padding:10px 20px;
-border:none;
-border-radius:10px;
-background:#ff758f;
-color:white;
-font-size:16px;
-}
-
-.sos-btn{
-margin-top:30px;
-width:170px;
-height:170px;
-border-radius:50%;
-border:none;
-background:red;
-color:white;
-font-size:32px;
-font-weight:bold;
-box-shadow:0px 0px 20px red;
-}
-
-.quick button{
-margin:10px;
-padding:12px 20px;
-font-size:16px;
-border:none;
-border-radius:10px;
-background:#ff758f;
-color:white;
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Safe Sakhi SOS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
+<body class="bg-pink-50 min-h-screen flex items-center justify-center">
 
-<body>
+  <div class="bg-white shadow-xl rounded-2xl p-6 w-11/12 max-w-md text-center">
+    <h1 class="text-2xl font-bold text-pink-600 mb-4">Safe Sakhi SOS</h1>
 
-<div class="header">
-🌸 SAFE SAKHI <br>
-Smart + AI Safety
-</div>
+    <!-- Number Setup -->
+    <div id="setupSection">
+      <p class="mb-2 text-gray-600">Add Emergency WhatsApp Numbers</p>
+      <input id="num1" type="tel" placeholder="Number 1 with country code" class="w-full border p-2 rounded mb-2" />
+      <input id="num2" type="tel" placeholder="Number 2 with country code" class="w-full border p-2 rounded mb-4" />
+      <button onclick="saveNumbers()" class="bg-pink-600 text-white px-4 py-2 rounded w-full">Save Numbers</button>
+    </div>
 
-<div class="status" id="status">🟢 Status: Safe</div>
+    <!-- SOS Section -->
+    <div id="sosSection" class="hidden">
+      <button onclick="sendSOS()" class="bg-red-600 text-white text-xl font-bold px-6 py-4 rounded-full w-full mb-3">
+        SOS EMERGENCY
+      </button>
 
-<div class="box">
-<h3>Add Trusted Contact</h3>
-<input type="number" id="trustedNumber" placeholder="Enter Number with Country Code (91XXXXXXXXXX)">
-<br>
-<button class="save-btn" onclick="saveNumber()">Save Contact</button>
-<p id="savedMsg"></p>
-</div>
+      <button onclick="callEmergency()" class="bg-blue-600 text-white px-4 py-2 rounded w-full mb-3">
+        Call 112
+      </button>
 
-<button class="sos-btn" onclick="startSOS()">SOS</button>
-
-<div class="quick">
-<button onclick="callTrusted()">📞 Call Trusted</button>
-<button onclick="whatsappHelp()">💬 WhatsApp Help</button>
-<button onclick="shareLocation()">📍 Share Location</button>
-</div>
+      <button onclick="changeNumbers()" class="bg-gray-600 text-white px-4 py-2 rounded w-full">
+        Change Numbers
+      </button>
+    </div>
+  </div>
 
 <script>
 
-// ===== AI NIGHT ALERT =====
-function checkNight(){
-let hour=new Date().getHours();
-if(hour>=22 || hour<=6){
-document.getElementById("status").innerHTML=
-"🌙 Night Travel Detected — Stay Alert";
-}
-}
-checkNight();
-
-
-// ===== SAVE NUMBER =====
-function saveNumber(){
-let num=document.getElementById("trustedNumber").value;
-localStorage.setItem("trustedNumber",num);
-document.getElementById("savedMsg").innerHTML="✅ Contact Saved";
+// Load saved numbers
+window.onload = function() {
+  let n1 = localStorage.getItem("safe_num1");
+  if(n1){
+    document.getElementById("setupSection").classList.add("hidden");
+    document.getElementById("sosSection").classList.remove("hidden");
+  }
 }
 
+function saveNumbers(){
+  let n1 = document.getElementById("num1").value;
+  let n2 = document.getElementById("num2").value;
 
-// ===== GET SAVED NUMBER =====
-function getNumber(){
-return localStorage.getItem("trustedNumber");
+  if(!n1){
+    alert("Enter at least one number");
+    return;
+  }
+
+  localStorage.setItem("safe_num1", n1);
+  localStorage.setItem("safe_num2", n2);
+
+  alert("Numbers Saved Successfully");
+  location.reload();
 }
 
-
-// ===== SOS =====
-function startSOS(){
-
-let num=getNumber();
-
-if(!num){
-alert("Please Save Trusted Number First");
-return;
+function changeNumbers(){
+  localStorage.removeItem("safe_num1");
+  localStorage.removeItem("safe_num2");
+  location.reload();
 }
 
-// Call 112
-window.location.href="tel:112";
-
-// Send Location WhatsApp
-shareLocation();
-
-alert("SOS Activated!");
-
+function callEmergency(){
+  window.location.href = "tel:112";
 }
 
+function sendSOS(){
+  if(!navigator.geolocation){
+    alert("Location not supported");
+    return;
+  }
 
-// ===== CALL TRUSTED =====
-function callTrusted(){
-let num=getNumber();
-if(num){
-window.location.href="tel:"+num;
-}else{
-alert("Save Trusted Number First");
-}
-}
+  navigator.geolocation.getCurrentPosition(function(pos){
+    let lat = pos.coords.latitude;
+    let lon = pos.coords.longitude;
 
+    let locationLink = `https://maps.google.com/?q=${lat},${lon}`;
 
-// ===== WHATSAPP HELP =====
-function whatsappHelp(){
-let num=getNumber();
-if(num){
-window.open("https://wa.me/"+num+"?text=Help%20Needed%20Safe%20Sakhi");
-}else{
-alert("Save Trusted Number First");
-}
-}
+    let msg = encodeURIComponent("🚨 EMERGENCY!\nI need help.\nMy Live Location:\n" + locationLink);
 
+    let n1 = localStorage.getItem("safe_num1");
+    let n2 = localStorage.getItem("safe_num2");
 
-// ===== LOCATION SHARE =====
-function shareLocation(){
+    if(n1) window.open(`https://wa.me/${n1}?text=${msg}`);
+    if(n2) window.open(`https://wa.me/${n2}?text=${msg}`);
 
-let num=getNumber();
-if(!num){
-alert("Save Trusted Number First");
-return;
-}
-
-if(navigator.geolocation){
-navigator.geolocation.getCurrentPosition(function(pos){
-
-let lat=pos.coords.latitude;
-let lon=pos.coords.longitude;
-
-let mapLink="https://www.google.com/maps?q="+lat+","+lon;
-
-let waLink=
-"https://wa.me/"+num+
-"?text=Emergency%20Location:%20"+mapLink;
-
-window.open(waLink);
-
-});
-}else{
-alert("Location Not Supported");
-}
-
+  }, function(){
+    alert("Location permission denied");
+  });
 }
 
 </script>
