@@ -6,103 +6,168 @@
 
 <title>Safe Sakhi SOS</title>
 
-<!-- Manifest -->
 <link rel="manifest" href="manifest.json">
-
-<meta name="theme-color" content="#ff4d6d">
+<meta name="theme-color" content="#ff4da6">
 
 <style>
-
 body{
 margin:0;
-font-family: Arial, sans-serif;
-background: linear-gradient(180deg,#ff758f,#ff4d6d);
+font-family:Arial;
+background:linear-gradient(135deg,#ff4da6,#ff80bf);
 color:white;
 text-align:center;
 }
 
-/* Top Logo Area */
-.header{
-padding-top:40px;
+.container{
+padding:40px 20px;
 }
 
 .logo{
-width:90px;
-height:90px;
-border-radius:20px;
+width:120px;
+margin-bottom:20px;
 }
 
-/* App Name */
-h1{
-margin-top:10px;
-font-size:28px;
-}
-
-/* SOS Button Area */
-.sos-container{
-margin-top:80px;
-}
-
-/* Big SOS Button */
 .sos-btn{
 width:200px;
 height:200px;
 border-radius:50%;
 border:none;
-font-size:40px;
+background:red;
+color:white;
+font-size:30px;
 font-weight:bold;
-background:white;
-color:#ff4d6d;
-box-shadow:0 0 25px rgba(0,0,0,0.3);
+box-shadow:0 0 30px rgba(0,0,0,0.4);
 }
 
-.sos-btn:active{
-transform:scale(0.95);
-}
-
-/* Bottom Text */
-.help-text{
-margin-top:60px;
+.info{
+margin-top:20px;
 font-size:16px;
-opacity:0.9;
 }
-
 </style>
 </head>
 
 <body>
 
-<div class="header">
+<div class="container">
+
 <img src="icon-192.png" class="logo">
-<h1>Safe Sakhi</h1>
-</div>
 
-<div class="sos-container">
-<button class="sos-btn" onclick="sendSOS()">SOS</button>
-</div>
+<h1>SAFE SAKHI</h1>
 
-<div class="help-text">
-Tap SOS in Emergency
+<button class="sos-btn" id="sosBtn">SOS</button>
+
+<p class="info">
+Double Tap OR Hold 3 sec for Emergency
+</p>
+
 </div>
 
 <script>
-function sendSOS(){
 
-alert("SOS Activated");
-
-// 112 Call
-window.location.href="tel:112";
-
-}
-</script>
-
-<!-- Service Worker -->
-<script>
-if ("serviceWorker" in navigator) {
-window.addEventListener("load", function() {
+// SERVICE WORKER
+if("serviceWorker" in navigator){
 navigator.serviceWorker.register("service-worker.js");
-});
 }
+
+// AI STYLE VARIABLES
+let tapCount = 0;
+let holdTimer = null;
+let lastTapTime = 0;
+
+// SMART AI STYLE DECISION
+function smartSOSDecision(triggerType){
+console.log("AI Decision Trigger:", triggerType);
+
+// Free AI Style Logic
+if(triggerType === "double"){
+activateSOS("FAST EMERGENCY DETECTED");
+}
+if(triggerType === "hold"){
+activateSOS("CONFIRMED EMERGENCY");
+}
+}
+
+// FINAL SOS ACTION
+function activateSOS(reason){
+
+alert("🚨 SOS Activated\n" + reason);
+
+sendLocationAndWhatsApp();
+callEmergency();
+
+}
+
+// CALL 112
+function callEmergency(){
+window.location.href = "tel:112";
+}
+
+// LOCATION + WHATSAPP
+function sendLocationAndWhatsApp(){
+
+if(navigator.geolocation){
+
+navigator.geolocation.getCurrentPosition(function(pos){
+
+let lat = pos.coords.latitude;
+let long = pos.coords.longitude;
+
+let message =
+"🚨 SAFE SAKHI EMERGENCY\n\n" +
+"I NEED HELP\n\n" +
+"📍 Location:\n" +
+"https://maps.google.com/?q="+lat+","+long;
+
+let phone = "601174060861"; // YOUR BUSINESS WHATSAPP
+
+let url =
+"https://wa.me/"+phone+
+"?text="+encodeURIComponent(message);
+
+window.open(url,"_blank");
+
+},
+function(){
+alert("Location Permission Needed");
+});
+
+}
+
+}
+
+// DOUBLE TAP + HOLD LOGIC
+let sosBtn = document.getElementById("sosBtn");
+
+sosBtn.addEventListener("click", function(){
+
+let now = new Date().getTime();
+
+if(now - lastTapTime < 400){
+tapCount++;
+}else{
+tapCount = 1;
+}
+
+lastTapTime = now;
+
+if(tapCount >= 2){
+smartSOSDecision("double");
+tapCount = 0;
+}
+
+});
+
+// HOLD LOGIC
+sosBtn.addEventListener("touchstart", function(){
+holdTimer = setTimeout(function(){
+smartSOSDecision("hold");
+},3000);
+});
+
+sosBtn.addEventListener("touchend", function(){
+clearTimeout(holdTimer);
+});
+
 </script>
 
 </body>
